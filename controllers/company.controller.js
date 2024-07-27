@@ -2,6 +2,7 @@ import { Logo, Job, Contact, Service, Project, Gallery } from "../models/company
 import { cloudinaryUploadImg, cloudinaryDeleteImg } from '../utils/cloudinary'
 import asyncHandler from "express-async-handler"
 import fs from "fs"
+import createHttpError from "http-errors"
 
 
 export const uploadCompanyLogo = asyncHandler(async (req, res) => {
@@ -42,3 +43,47 @@ export const uploadCompanyLogo = asyncHandler(async (req, res) => {
         res.status(500).json({ message: 'Error uploading logo', error: err.message });
     }
 });
+
+// New Job Upload
+export const newJobPost = asyncHandler(async (req, res) => {
+    try {
+        let { title, description, location } = req.body
+        let jobExists = await Job.findOne({ title, description, location })
+        if (jobExists) throw createHttpError.Conflict('Similar type of job is already present')
+        const newJob = new Job(req.body);
+        await newJob.save();
+
+        const allJobs = await Job.find()
+
+        res.status(200).json({ message: 'New job posted successfully', jobs: allJobs });
+
+    } catch (err) {
+        res.status(500).json({ message: 'Error Posting new job', error: err.message });
+    }
+})
+
+// Edit Job By ID
+export const editJob = asyncHandler(async (req, res) => {
+    let jobId = req.params.id
+    let jobData = req.body
+    try {
+        let jobExists = await Job.findById({ _id: jobId })
+
+        if (!jobExists) throw createHttpError.NotFound('Job not found')
+
+        // Update the job with new data
+        const updatedJob = await Job.findByIdAndUpdate(jobId, jobData, {
+            new: true, // Return the updated document
+            runValidators: true // Ensure that validators are run on the update
+        });
+
+        if (!updatedJob) {
+            throw createHttpError(404, 'Job not found');
+        }
+
+        res.status(200).json({ message: 'Job edited successfully', job: updatedJob });
+
+    } catch (err) {
+        res.status(500).json({ message: 'Error Editing job', error: err.message });
+    }
+})

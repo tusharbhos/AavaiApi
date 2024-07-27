@@ -11,7 +11,10 @@ const jobSchema = new Schema({
     title: { type: String, required: true },
     description: { type: String, required: true },
     location: { type: String, required: true },
-    postedDate: { type: Date, default: Date.now }
+    postedDate: { type: Date, default: Date.now },
+    companyName: { type: String, required: true },
+    employmentType: { type: String, enum: ['Full-time', 'Part-time', 'Contract', 'Temporary', 'Internship'], required: true },
+    salaryRange: { type: String },
 });
 
 const contactSchema = new Schema({
