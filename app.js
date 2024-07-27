@@ -10,6 +10,7 @@ import { configDotenv } from 'dotenv';
 
 // import routes
 import adminRouter from './Routes/admin.route.js';
+import companyRouter from './Routes/company.route.js';
 
 // Import error handlers
 import { errorHandler, notFound } from "./middlewares/errorHandler.js";
@@ -31,7 +32,7 @@ app.use(cookieParser());
 // cors => cross origin resource sharing
 app.use(cors());
 
-app.use("/api/vi", adminRouter)
+app.use("/api/vi", adminRouter, companyRouter)
 
 // testing api
 app.get("/test", (req, res, next) => {
