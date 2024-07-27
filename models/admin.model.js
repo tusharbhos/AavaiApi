@@ -3,19 +3,12 @@ import bcrypt from "bcryptjs";
 require("dotenv").config();
 import jwt from "jsonwebtoken";
 
-const emailRegexPattern: RegExp = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const emailRegexPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const passwordRegexPattern =
 	/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 
-export interface IAdmin extends Document {
-	name: string;
-	email: string;
-	password: string;
-	SignAccessToken: () => string;
-	SignRefreshToken: () => string;
-}
 
-const adminSchema: Schema<IAdmin> = new mongoose.Schema(
+const adminSchema = new mongoose.Schema(
 	{
 		name: {
 			type: String,
@@ -25,7 +18,7 @@ const adminSchema: Schema<IAdmin> = new mongoose.Schema(
 			type: String,
 			required: [true, "Please enter your email"],
 			validate: {
-				validator: function (value: string) {
+				validator: function (value) {
 					return emailRegexPattern.test(value);
 				},
 				message: "please enter a valid email",
@@ -37,7 +30,7 @@ const adminSchema: Schema<IAdmin> = new mongoose.Schema(
 			required: [true, "Please enter your password"],
 			minlength: [8, "Please length must be 8 characters long"],
 			validate: {
-				validator: function (value: string) {
+				validator: function (value) {
 					return passwordRegexPattern.test(value);
 				},
 				message: "please enter a valid email",
@@ -47,7 +40,7 @@ const adminSchema: Schema<IAdmin> = new mongoose.Schema(
 	{ timestamps: true }
 );
 
-adminSchema.pre<IAdmin>("save", async function (next) {
+adminSchema.pre("save", async function (next) {
 	if (!this.isModified("password")) {
 		next();
 	}
@@ -68,12 +61,10 @@ adminSchema.methods.SignRefreshToken = function () {
 	});
 };
 
-adminSchema.methods.comparePassword = async function (
-	enteredPass: string
-): Promise<boolean> {
+adminSchema.methods.ComparePassword = async function (enteredPass) {
 	return await bcrypt.compare(enteredPass, this.password);
 };
 
-const adminModel: Model<IAdmin> = mongoose.model("Admin", adminSchema);
+const adminModel = mongoose.model("Admin", adminSchema);
 
 export default adminModel;
