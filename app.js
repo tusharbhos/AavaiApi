@@ -8,6 +8,9 @@ import morgan from 'morgan';
 import { dbConnect } from './utils/dbConnect';
 import { configDotenv } from 'dotenv';
 
+// import routes
+import adminRouter from './Routes/admin.route.js';
+
 // Import error handlers
 import { errorHandler, notFound } from "./middlewares/errorHandler.js";
 
@@ -27,6 +30,8 @@ app.use(cookieParser());
 
 // cors => cross origin resource sharing
 app.use(cors());
+
+app.use("/api/vi", adminRouter)
 
 // testing api
 app.get("/test", (req, res, next) => {
