@@ -4,9 +4,9 @@
 	"description": "",
 	"main": "index.js",
 	"scripts": {
-		"build": "npx tsc",
-		"start": "node dist/server.js",
-		"dev": "ts-node-dev --respawn --transpile-only server.ts"
+		"dev": "nodemon server.ts",
+		"start": "node build/server.js",
+		"build": "tsc"
 	},
 	"keywords": [],
 	"author": "",
@@ -43,6 +43,7 @@
 	"devDependencies": {
 		"@types/ejs": "^3.1.2",
 		"@types/node-cron": "^3.0.8",
-		"@types/nodemailer": "^6.4.9"
+		"@types/nodemailer": "^6.4.9",
+		"nodemon": "^3.1.4"
 	}
 }

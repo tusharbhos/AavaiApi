@@ -3,7 +3,7 @@ import express, { NextFunction, Request, Response } from "express";
 export const app = express();
 import cors from "cors";
 import cookieParser from "cookie-parser";
-import { ErrorMiddleware } from "./middleware/error";
+import { ErrorMiddleware } from "./middlewares/error";
 import { rateLimit } from 'express-rate-limit'
 
 // body parser
@@ -14,10 +14,7 @@ app.use(cookieParser());
 
 // cors => cross origin resource sharing
 app.use(
-  cors({
-    origin: ["https://ays-lms-client.vercel.app"],
-    credentials: true,
-  })
+  cors()
 );
 
 // api requests limit
@@ -27,11 +24,6 @@ const limiter = rateLimit({
 	standardHeaders: 'draft-7', 
 	legacyHeaders: false, 
 })
-
-// routes
-app.use(
-  "/api/v1"
-);
 
 // testing api
 app.get("/test", (req: Request, res: Response, next: NextFunction) => {
